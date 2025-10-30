@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion - Recruitment App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card {% if admin_mode %}border-danger{% else %}border-success{% endif %}">
+            <div class="card-header {% if admin_mode %}bg-danger text-white{% else %}bg-success text-white{% endif %}">
+                <h4 class="card-title mb-0">
+                    {% if admin_mode %}
+                    🔐 Connexion Administrateur
+                    {% else %}
+                    Connexion Utilisateur
+                    {% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Nom d'utilisateur</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn {% if admin_mode %}btn-danger{% else %}btn-success{% endif %} w-100">
+                        {% if admin_mode %}
+                        🔐 Accès Administrateur
+                        {% else %}
+                        Se connecter
+                        {% endif %}
+                    </button>
+                </form>
+                
+                <div class="text-center mt-3">
+                    {% if not admin_mode %}
+                    <p>Pas de compte ? <a href="{{ url_for('register') }}">S'inscrire</a></p>
+                    <div class="mt-2">
+                        <a href="{{ url_for('login', admin='true') }}" class="btn btn-outline-danger btn-sm">
+                            🔐 Accès Administrateur
+                        </a>
+                    </div>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-success btn-sm">
+                        ← Retour à la connexion utilisateur
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+.btn {
+    font-weight: 600;
+}
+</style>
+{% endblock %}

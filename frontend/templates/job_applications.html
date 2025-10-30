@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Candidatures - Recruitment App{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Candidatures pour l'annonce</h2>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">← Retour à l'admin</a>
+</div>
+
+{% if applications %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">{{ applications|length }} candidature(s)</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Candidat</th>
+                        <th>Email</th>
+                        <th>CV</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td>
+                            <strong>{{ app.username }}</strong>
+                        </td>
+                        <td>{{ app.email }}</td>
+                        <td>
+                            {% if app.cv_filename %}
+                            <a href="http://localhost:8000/uploads/{{ app.cv_filename }}" 
+                               target="_blank" class="btn btn-outline-primary btn-sm">
+                                📄 Télécharger CV
+                            </a>
+                            {% else %}
+                            <span class="text-muted">Aucun CV</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ app.applied_at[:10] }}</td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#letterModal{{ app.id }}">
+                                📝 Voir lettre
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Modal pour la lettre de motivation -->
+                    <div class="modal fade" id="letterModal{{ app.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Lettre de motivation - {{ app.username }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="p-3 bg-light rounded">
+                                        {{ app.cover_letter|replace('\n', '<br>')|safe }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">
+    Aucune candidature pour cette annonce.
+</div>
+{% endif %}
+{% endblock %}

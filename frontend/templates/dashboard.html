@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord - Recruitment App{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Tableau de bord</h2>
+    <div>
+        <a href="{{ url_for('add_job') }}" class="btn btn-primary">Ajouter une annonce</a>
+        {% if user.role == 'admin' %}
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-warning">Administration</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h4 class="mb-3">Annonces de recrutement</h4>
+        
+        {% if jobs %}
+            {% for job in jobs %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title">{{ job.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ job.company }} - {{ job.location }}</h6>
+                            {% if job.salary %}
+                            <p class="card-text"><strong>Salaire:</strong> {{ job.salary }} €</p>
+                            {% endif %}
+                            <p class="card-text">{{ job.description }}</p>
+                        </div>
+                        <div class="btn-group">
+                            <a href="{{ url_for('apply_job', job_id=job.id) }}" class="btn btn-success btn-sm">Postuler</a>
+                            {% if user.role == 'admin' or user.id == job.created_by %}
+                            <a href="{{ url_for('delete_job', job_id=job.id) }}" 
+                               class="btn btn-danger btn-sm" 
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')">
+                                Supprimer
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info">
+                Aucune annonce disponible pour le moment.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
